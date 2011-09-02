@@ -11,7 +11,7 @@ describe "chromic", ->
     it "should do deep array comparison", ->
       [1,2,3,4].should_be [1,2,3,4]
     it "should assert NaN", ->
-      (3*'bork').should_be NaN
+      NaN.should_be NaN
 
   it "should define a shouldnt_be property on Object.prototype", ->
     Object.prototype.should_have_property "shouldnt_be"
@@ -37,14 +37,21 @@ describe "chromic", ->
       [1,2,3].shouldnt_contain 5
 
   describe "stub", ->
+    prior = stubbed: -> false
+    stubby = prior
+    class Stubby
+      @stubbed: -> false
     it "should create a method stub on object", ->
-      x = {}
-      x.stub("test") -> 4
-      x.test().should_be 4
+      prior.stub("stubbed") -> true
+      prior.stubbed().should_be true
     it "should create a method stub on constructor", ->
-      Date.stub("getDay") -> 4
-      today = new Date()
-      today.getDay().should_be 4
+      Stubby.stub("stubbed") -> true
+      stubby = new Stubby
+      stubby.stubbed().should_be true
+    it "does not pollute across multiple its", ->
+      prior.stubbed().should_be false
+      stubby.stubbed().should_be false
+      
 
   describe "double", ->
     it "should create a test double", ->
@@ -53,7 +60,42 @@ describe "chromic", ->
       x_double.a.should_be 1
     describe "should_receive", ->
       it "should have method call expectation", ->
-        x = fn: "zork"
+        x = fn: -> "zork"
+        x_double = x.double
+        x_double.should_receive("fn")
+        x_double.fn()
+      it "should have method call expectations with return value", ->
+        x = fn: -> "zork"
         x_double = x.double
         x_double.should_receive("fn").and_return 4
         x_double.fn().should_be 4
+    describe "shouldnt_receive", ->
+      it "should pass if property not invoked", ->
+        x = fn: -> zork
+        x_double = x.double
+        x_double.shouldnt_receive("fn")
+
+  describe "it", ->
+    it "should ", ->
+      4  
+  
+  describe "describe", ->
+    it "should reset object property expectations", ->
+      x = {}.double
+      y = {}.double
+      z = {}.double
+      y.shouldnt_receive "nothing"
+      x.should_receive "nothing"
+      describe "resets", ->
+        it "should now be reset", ->
+        y.nothing()
+        z.should_receive "nothing"
+        z.nothing()
+
+
+  
+   describe "function spies", ->
+     it "should spy on a function", ->
+       fn = ->
+       fn.should_be_invoked
+       

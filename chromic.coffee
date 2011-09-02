@@ -2,11 +2,11 @@
 assert = require 'assert'
 require './should_be.coffee'
 require './should_contain.coffee'
-require './stub.coffee'
-
-Object.defineProperty String.prototype, "repeat", {value: (n) -> Array(n).join @ , enumerable: false}
+make_stubber = require('./stub.coffee').make_stubber
 
 chromic = {}
+
+make_stubber chromic
 
 pre = ""
 
@@ -35,7 +35,14 @@ passed = (should) ->
 describe = (what) ->
   "#{pre}\033[33m#{what}\033[0m"
 
+chromic.reset = ->
+  @undo = []
+  @invokees = []
+  @callees = []
+  @nega_callees = []
+
 chromic.it = (should, lambda) ->
+  chromic.reset()
   try
     do lambda
     for fn in chromic.invokees
@@ -43,22 +50,20 @@ chromic.it = (should, lambda) ->
     render passed should
     for callee in chromic.callees
       if not (callee.key in callee.object.received) then throw "object did not receive #{callee.key}"
+    for callee in chromic.nega_callees
+      if callee.key in callee.object.received then throw "object should not have received #{callee.key}"
   catch e
     render failed should
     render errored e
   finally
     for removed in chromic.undo
-      removed["object"].prototype[removed["method"]] = removed["original"]
+      removed["object"][removed["prop"]] = removed["original"]
 
 chromic.describe = (what, lambda) ->
   do indent
   render describe what
-  chromic.undo = []
-  chromic.invokees = []
-  chromic.callees = []
-  do ->
-    do lambda
-    do outdent
+  do lambda
+  do outdent
 
 do ->
   double = ->
@@ -72,28 +77,23 @@ do ->
         @received.push property
         return_value
 
-      Object.defineProperty @, property, {value: receive }
+      Object.defineProperty @, property, { value: receive }
 
       chromic.callees.push { object: @, key: property }
 
       and_return: (value) ->
         return_value = value
 
-    should_be_invoked = ->
-      chromic.invokees.push @
-
-    for property of @
-      if typeof @[property] == "function"
-        do =>
-          original = @[property]
-          proxy = ->
-            proxy.invoked = true
-          Object.defineProperty proxy, "invoked", {value: false, enumerable: false, writable: true }
-          @[property] = proxy
-
-        Object.defineProperty @[property], "should_be_invoked", { get: should_be_invoked, set: (-> false), enumerable: false }
+    shouldnt_receive = (property) ->
+      receive = ->
+        @received.push property
+        false
+      Object.defineProperty @, property, { value: receive }
+      chromic.nega_callees.push { object: @, key: property }
 
     Object.defineProperty doubled, "should_receive", { value: should_receive, enumerable: false }
+
+    Object.defineProperty doubled, "shouldnt_receive", { value: shouldnt_receive, enumerable: false }
 
     doubled
 
@@ -111,18 +111,6 @@ do ->
     (fn, trigger) -> fn()
 
   Object.defineProperty Object.prototype, "immediately", { get: immediately, set: (-> false), enumerable: false }
-
-  tee = (what) ->
-    to: (object) ->
-      #console.log object
-      tee_fn = (teed_value) ->
-        console.log "@"
-        #object[what] = teed_value
-        #@[what](teed_value)
-      Object.defineProperty console, what, {value: tee_fn, enumerable: false }
-
-  Object.defineProperty console, "tee", { value: tee, enumerable: false }
-
 
 
 exports.it = chromic.it

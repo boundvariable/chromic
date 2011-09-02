@@ -20,4 +20,3 @@ do ->
       assert.notEqual @, value
 
   Object.defineProperty Object.prototype, "shouldnt_be", { value: shouldnt_be, enumerable: false }
-
