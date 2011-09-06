@@ -1,5 +1,5 @@
 (function() {
-  var assert, chromic, describe, errored, failed, indent, level, make_stubber, outdent, passed, pre, render;
+  var assert, chromic, describe, errored, failed, indent, level, make_spyer, make_stubber, outdent, passed, pre, render;
   var __indexOf = Array.prototype.indexOf || function(item) {
     for (var i = 0, l = this.length; i < l; i++) {
       if (this[i] === item) return i;
@@ -9,9 +9,11 @@
   assert = require('assert');
   require('./should_be.coffee');
   require('./should_contain.coffee');
+  make_spyer = require('./spy.coffee').make_spyer;
   make_stubber = require('./stub.coffee').make_stubber;
   chromic = {};
   make_stubber(chromic);
+  make_spyer(chromic);
   pre = "";
   level = 0;
   outdent = function() {
@@ -51,6 +53,7 @@
       _ref = chromic.invokees;
       for (_i = 0, _len = _ref.length; _i < _len; _i++) {
         fn = _ref[_i];
+        console.log(typeof fn);
         if (fn.invoked === false) {
           throw "function not invoked";
         }

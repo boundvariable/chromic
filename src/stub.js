@@ -1,7 +1,6 @@
 (function() {
-  var assert, make_stubber;
+  var make_stubber;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
-  assert = require('assert');
   make_stubber = function(owner) {
     var stub;
     stub = function(method) {

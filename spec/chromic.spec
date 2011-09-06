@@ -1,4 +1,4 @@
-{it, stub, describe} = require 'chromic'
+{it, stub, describe} = require '../src/chromic'
 
 describe "chromic", ->
   it "should define a should_be property on Object.prototype", ->
@@ -95,6 +95,9 @@ describe "chromic", ->
   
    describe "function spies", ->
      it "should spy on a function", ->
-       fn = ->
+       closed_over = 0
+       fn = -> closed_over = 4
+       fn = fn.spy
        fn.should_be_invoked
-       
+       fn()
+       closed_over.should_be 4

@@ -1,12 +1,14 @@
-
 assert = require 'assert'
 require './should_be.coffee'
 require './should_contain.coffee'
+make_spyer = require('./spy.coffee').make_spyer
 make_stubber = require('./stub.coffee').make_stubber
+
 
 chromic = {}
 
 make_stubber chromic
+make_spyer chromic
 
 pre = ""
 
@@ -46,6 +48,7 @@ chromic.it = (should, lambda) ->
   try
     do lambda
     for fn in chromic.invokees
+      console.log typeof fn
       if fn.invoked == false then throw "function not invoked"
     render passed should
     for callee in chromic.callees

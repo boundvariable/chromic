@@ -1,4 +1,3 @@
-assert = require 'assert'
 
 make_stubber = (owner) ->
   stub = (method) ->
