@@ -11,5 +11,6 @@
     "node": "~v0.4.11"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "main": "src/chromic.js"
 }
