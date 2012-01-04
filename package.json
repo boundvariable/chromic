@@ -2,13 +2,13 @@
   "author": "Patrick Lee <patrick@boundvariable.com>",
   "name": "chromic",
   "description": "Test framework",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "repository": {
     "type": "git",
     "url": "git://github.com/boundvariable/chromic.git"
   },
   "engines": {
-    "node": "~v0.4.11"
+    "node": ">= 0.4.11 <  0.7.0"
   },
   "dependencies": {},
   "devDependencies": {},
