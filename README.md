@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/boundvariable/chromic.png)](http://travis-ci.org/boundvariable/chromic)
 ```
       _                         _      
   ___| |__  _ __ ___  _ __ ___ (_) ___ 
