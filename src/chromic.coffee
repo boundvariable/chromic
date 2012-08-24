@@ -26,16 +26,16 @@ render = (s) ->
   console.log s
 
 failed = (should) ->
-  "#{pre}  #{should} (\033[31m \u2716 \033[0m)"
+  "#{pre}  #{should} (\x33[31m \u2716 \x33[0m)"
 
 errored = (e) ->
-  "#{pre}\033[31m  \u21b3  #{e} \033[0m"
+  "#{pre}\x33[31m  \u21b3  #{e} \x33[0m"
 
 passed = (should) ->
-  "#{pre}  #{should} (\033[32m \u2714 \033[0m)"
+  "#{pre}  #{should} (\x33[32m \u2714 \x33[0m)"
 
 describe = (what) ->
-  "#{pre}\033[33m#{what}\033[0m"
+  "#{pre}\x33[33m#{what}\x33[0m"
 
 chromic.reset = ->
   @undo = []
