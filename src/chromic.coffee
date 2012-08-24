@@ -1,8 +1,8 @@
 assert = require 'assert'
-require './should_be.coffee'
-require './should_contain.coffee'
-make_spyer = require('./spy.coffee').make_spyer
-make_stubber = require('./stub.coffee').make_stubber
+require './should_be'
+require './should_contain'
+make_spyer = require('./spy').make_spyer
+make_stubber = require('./stub').make_stubber
 
 
 chromic = {}
@@ -43,30 +43,32 @@ chromic.reset = ->
   @callees = []
   @nega_callees = []
 
-chromic.it = (should, lambda) ->
+chromic.it = (should, spec, done) ->
   chromic.reset()
   try
-    do lambda
+    spec()
     for fn in chromic.invokees
-      console.log typeof fn
       if fn.invoked == false then throw "function not invoked"
     render passed should
     for callee in chromic.callees
-      if not (callee.key in callee.object.received) then throw "object did not receive #{callee.key}"
+      if not (callee.key in callee.object.received)
+        throw "object did not receive #{callee.key}"
     for callee in chromic.nega_callees
-      if callee.key in callee.object.received then throw "object should not have received #{callee.key}"
+      if callee.key in callee.object.received
+        throw "object should not have received #{callee.key}"
   catch e
     render failed should
     render errored e
   finally
     for removed in chromic.undo
       removed["object"][removed["prop"]] = removed["original"]
+    done?()
 
-chromic.describe = (what, lambda) ->
-  do indent
+chromic.describe = (what, spec) ->
+  indent()
   render describe what
-  do lambda
-  do outdent
+  spec()
+  outdent()
 
 do ->
   double = ->
@@ -95,8 +97,10 @@ do ->
       chromic.nega_callees.push { object: @, key: property }
 
     Object.defineProperty doubled, "should_receive", { value: should_receive, enumerable: false }
+    Object.defineProperty doubled, "shouldReceive", { value: should_receive, enumerable: false }
 
     Object.defineProperty doubled, "shouldnt_receive", { value: shouldnt_receive, enumerable: false }
+    Object.defineProperty doubled, "shouldntReceive", { value: shouldnt_receive, enumerable: false }
 
     doubled
 
@@ -107,8 +111,10 @@ do ->
       assert.throws @, (e) ->
         e.message is expected_message
     Object.defineProperty Function.prototype, "should_throw", { value: should_throw, enumerable: false }
+    Object.defineProperty Function.prototype, "shouldThrow", { value: should_throw, enumerable: false }
 
   Object.defineProperty Object.prototype, "should_have_property", { value: ((property) -> @.hasOwnProperty property ), enumerable: false }
+  Object.defineProperty Object.prototype, "shouldHaveProperty", { value: ((property) -> @.hasOwnProperty property ), enumerable: false }
 
   immediately = ->
     (fn, trigger) -> fn()

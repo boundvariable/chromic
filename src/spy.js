@@ -1,6 +1,7 @@
 (function() {
   var make_spyer;
   var __slice = Array.prototype.slice;
+
   make_spyer = function(owner) {
     var spy;
     spy = function() {
@@ -33,5 +34,7 @@
       enumerable: false
     });
   };
+
   exports.make_spyer = make_spyer;
+
 }).call(this);

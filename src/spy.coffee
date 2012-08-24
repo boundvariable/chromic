@@ -9,6 +9,7 @@ make_spyer = (owner) ->
       owner.invokees.push @
       Object.defineProperty new_fn, "invoked", {value:false, enumerable:false, configurable: true}
     Object.defineProperty new_fn, "should_be_invoked", {get: expect_invoke, enumerable: false}
+    Object.defineProperty new_fn, "shouldBeInvoked", {get: expect_invoke, enumerable: false}
 
     new_fn
 

@@ -1,12 +1,9 @@
 (function() {
   var assert;
-  var __indexOf = Array.prototype.indexOf || function(item) {
-    for (var i = 0, l = this.length; i < l; i++) {
-      if (this[i] === item) return i;
-    }
-    return -1;
-  };
+  var __hasProp = Object.prototype.hasOwnProperty, __indexOf = Array.prototype.indexOf || function(item) { for (var i = 0, l = this.length; i < l; i++) { if (__hasProp.call(this, i) && this[i] === item) return i; } return -1; };
+
   assert = require('assert');
+
   (function() {
     var array_should_contain, array_shouldnt_contain;
     array_should_contain = function(value) {
@@ -24,6 +21,7 @@
       enumerable: false
     });
   })();
+
   (function() {
     var pair_in_object, should_contain, shouldnt_contain;
     pair_in_object = function(pair, object) {
@@ -31,7 +29,11 @@
       _results = [];
       for (k in object) {
         v = object[k];
-        _results.push(k in pair && pair[k] === v ? true : false);
+        if (k in pair && pair[k] === v) {
+          _results.push(true);
+        } else {
+          _results.push(false);
+        }
       }
       return _results;
     };
@@ -52,4 +54,5 @@
       enumerable: false
     });
   })();
+
 }).call(this);

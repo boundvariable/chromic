@@ -1,31 +1,34 @@
 (function() {
   var make_stubber;
-  var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+
   make_stubber = function(owner) {
     var stub;
     stub = function(method) {
-      return __bind(function(lambda) {
-        if (this.prototype) {
+      var _this = this;
+      return function(lambda) {
+        if (_this.prototype) {
           owner.undo.push({
-            object: this.prototype,
+            object: _this.prototype,
             prop: method,
-            original: this[method]
+            original: _this[method]
           });
-          return this.prototype[method] = lambda;
+          return _this.prototype[method] = lambda;
         } else {
           owner.undo.push({
-            object: this,
+            object: _this,
             prop: method,
-            original: this[method]
+            original: _this[method]
           });
-          return this[method] = lambda;
+          return _this[method] = lambda;
         }
-      }, this);
+      };
     };
     return Object.defineProperty(Object.prototype, "stub", {
       value: stub,
       enumerable: false
     });
   };
+
   exports.make_stubber = make_stubber;
+
 }).call(this);

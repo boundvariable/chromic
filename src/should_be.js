@@ -1,6 +1,8 @@
 (function() {
   var assert;
+
   assert = require('assert');
+
   (function() {
     var should_be, shouldnt_be;
     should_be = function(value) {
@@ -30,4 +32,5 @@
       enumerable: false
     });
   })();
+
 }).call(this);
