@@ -38,19 +38,19 @@
   };
 
   failed = function(should) {
-    return "" + pre + "  " + should + " (\x33[31m \u2716 \x33[0m)";
+    return "" + pre + "  " + should + " (\x1B[0;31m \u2716 \x1B[0;0m)";
   };
 
   errored = function(e) {
-    return "" + pre + "\x33[31m  \u21b3  " + e + " \x33[0m";
+    return "" + pre + "\x1B[0;31m  \u21b3  " + e + " \x1B[0;0m";
   };
 
   passed = function(should) {
-    return "" + pre + "  " + should + " (\x33[32m \u2714 \x33[0m)";
+    return "" + pre + "  " + should + " (\x1B[0;32m \u2714 \x1B[0;0m)";
   };
 
   describe = function(what) {
-    return "" + pre + "\x33[33m" + what + "\x33[0m";
+    return "" + pre + "\x1B[0;33m" + what + "\x1B[0;0m";
   };
 
   chromic.reset = function() {
